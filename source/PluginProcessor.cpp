@@ -76,7 +76,7 @@ const juce::String PluginProcessor::getProgramName (int index)
 {
     juce::ignoreUnused (index);
     // Steinberg's VST3 validator fails plugins whose single default program has no name
-    return "Default";
+    return "clippa";
 }
 
 void PluginProcessor::changeProgramName (int index, const juce::String& newName)
