@@ -1,4 +1,4 @@
-#Clippa
+**Clippa**
 
 Simple clipper VST made on JUCE.
 
