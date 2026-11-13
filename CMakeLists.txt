@@ -92,7 +92,7 @@ juce_add_plugin("${PROJECT_NAME}"
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE
     NEEDS_MIDI_OUTPUT FALSE
-    VST3_CATEGORIES Fx Dynamics
+    VST3_CATEGORIES Fx Distortion
 
     # The name of your final executable
     # This is how it's listed in the DAW
@@ -143,7 +143,7 @@ target_compile_definitions(SharedCode
     VERSION="${CURRENT_VERSION}"
 
     # JucePlugin_Name is for some reason doesn't use the nicer PRODUCT_NAME
-    PRODUCT_NAME_WITHOUT_VERSION="Pamplejuce"
+    PRODUCT_NAME_WITHOUT_VERSION="Clippa"
 )
 
 # Link to any other modules you added (with juce_add_module) here!
