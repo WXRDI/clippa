@@ -1,11 +1,11 @@
 #include "PluginEditor.h"
 
 PluginEditor::PluginEditor (PluginProcessor& p)
-    : AudioProcessorEditor (&p), processorRef (p)
+    : AudioProcessorEditor (&p), processorRef (p), volumeSlider(p.apvts)
 {
     juce::ignoreUnused (processorRef);
 
-    addAndMakeVisible (inspectButton);
+    //addAndMakeVisible (inspectButton);
 
     // this chunk of code instantiates and opens the melatonin inspector
     inspectButton.onClick = [&] {
@@ -21,22 +21,26 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (400, 300);
+    addAndMakeVisible (volumeSlider);
 }
 
 PluginEditor::~PluginEditor()
 {
 }
 
+
+
 void PluginEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    g.fillAll (juce::Colours::white);
 
-    auto area = getLocalBounds();
-    g.setColour (juce::Colours::white);
+    //auto area = getLocalBounds();
+    g.setColour (juce::Colours::black);
     g.setFont (16.0f);
-    auto helloWorld = juce::String ("Hello from ") + PRODUCT_NAME_WITHOUT_VERSION + " v" VERSION + " running in " + CMAKE_BUILD_TYPE;
-    g.drawText (helloWorld, area.removeFromTop (150), juce::Justification::centred, false);
+            // Advanced way to make text
+            // auto helloWorld = juce::String ("Hello from ") + PRODUCT_NAME_WITHOUT_VERSION + " v" VERSION + " running in " + CMAKE_BUILD_TYPE;
+            // g.drawText (helloWorld, area.removeFromTop (150), juce::Justification::centred, false);
 }
 
 void PluginEditor::resized()
@@ -45,4 +49,5 @@ void PluginEditor::resized()
     auto area = getLocalBounds();
     area.removeFromBottom(50);
     inspectButton.setBounds (getLocalBounds().withSizeKeepingCentre(100, 50));
+    volumeSlider.setBounds (40, 30, 20, getHeight() - 60);
 }

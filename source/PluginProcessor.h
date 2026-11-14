@@ -1,6 +1,7 @@
 #pragma once
 
 #include <juce_audio_processors/juce_audio_processors.h>
+#include "VolumeSlider.h"
 
 #if (MSVC)
 #include "ipps.h"
@@ -9,6 +10,11 @@
 class PluginProcessor : public juce::AudioProcessor
 {
 public:
+
+    juce::AudioProcessorValueTreeState apvts;
+
+     static juce::AudioProcessorValueTreeState::ParameterLayout createLayout();
+
     PluginProcessor();
     ~PluginProcessor() override;
 

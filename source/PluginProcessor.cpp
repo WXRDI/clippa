@@ -1,5 +1,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "VolumeSlider.h"
 
 //==============================================================================
 PluginProcessor::PluginProcessor()
@@ -10,7 +11,8 @@ PluginProcessor::PluginProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ),
+      apvts (*this, nullptr, "Params", createLayout())
 {
 }
 
@@ -184,4 +186,19 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new PluginProcessor();
+}
+
+juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createLayout()
+{
+    juce::AudioProcessorValueTreeState::ParameterLayout layout;
+
+    layout.add (std::make_unique<juce::AudioParameterInt> (
+
+        // я так понимаю это дичь пишут для всех каждый раз
+        juce::ParameterID { "volume", 1 }, // id, должен совпадать с VolumeKnob
+        "Volume", // имя в DAW
+        0, 127, // значения от и до
+        64)); // значение по умолчанию
+
+    return layout;
 }
