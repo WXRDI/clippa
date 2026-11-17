@@ -17,7 +17,7 @@ public:
         slider.setTextBoxStyle (juce::Slider::NoTextBox, false, 90, 0);
         slider.setPopupDisplayEnabled (true, false, nullptr);
 
-        // ставим ПОСЛЕ создания attachment, иначе он перезапишет
+        // after attach
         slider.textFromValueFunction = [] (double v) {
             return juce::String ((float) v, 2) + " DB Threshold";
         };
@@ -28,7 +28,7 @@ public:
         // this function adds the slider to the editor
         addAndMakeVisible (&slider);
 
-        // если нужна копия значения в переменной самого класса
+        // if we need value in variable:
         // slider.onValueChange = [this] { volume = (float) slider.getValue(); };
     }
 
@@ -43,6 +43,6 @@ public:
     }
 
 private:
-    juce::Slider slider; // объявлен ДО attach, порядок важен
+    juce::Slider slider; // DECLARE BEFORE attach, order matters
     juce::AudioProcessorValueTreeState::SliderAttachment attach;
 };
