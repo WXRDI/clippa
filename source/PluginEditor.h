@@ -15,6 +15,7 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
     VolumeSlider volumeSlider;
+    OutGainKnob outGainKnob;
 
 private:
     // This reference is provided as a quick way for your editor to

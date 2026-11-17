@@ -2,6 +2,8 @@
 
 #include <juce_audio_processors/juce_audio_processors.h>
 #include "VolumeSlider.h"
+#include "ClipperMonitor.h"
+#include "OutGainKnob.h"
 
 #if (MSVC)
 #include "ipps.h"
@@ -10,6 +12,7 @@
 class PluginProcessor : public juce::AudioProcessor
 {
 public:
+    ClipperMonitor monitor;
 
     juce::AudioProcessorValueTreeState apvts;
 
@@ -45,5 +48,9 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
+    std::atomic<float>* thresholdParam = nullptr;
+    std::atomic<float>* outGainParam = nullptr;
+    std::vector<float> dry;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)
 };

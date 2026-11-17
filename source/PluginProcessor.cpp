@@ -1,6 +1,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "VolumeSlider.h"
+//#include "Colors.h"
 
 //==============================================================================
 PluginProcessor::PluginProcessor()
@@ -14,10 +15,13 @@ PluginProcessor::PluginProcessor()
                        ),
       apvts (*this, nullptr, "Params", createLayout())
 {
+    thresholdParam = apvts.getRawParameterValue ("threshold");
+    outGainParam = apvts.getRawParameterValue ("outGain");
 }
 
 PluginProcessor::~PluginProcessor()
 {
+    //SET LOOK & FEEL AS nullptr IMPORTANT!!!!
 }
 
 //==============================================================================
@@ -91,7 +95,8 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-    juce::ignoreUnused (sampleRate, samplesPerBlock);
+    juce::ignoreUnused (sampleRate);
+    dry.assign ((size_t) samplesPerBlock, 0.0f);
 }
 
 void PluginProcessor::releaseResources()
@@ -139,6 +144,40 @@ void PluginProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
+
+    const int numSamples = buffer.getNumSamples();
+    const int n = juce::jmin (numSamples, (int) dry.size());
+
+    if (totalNumInputChannels > 0)
+        std::copy (buffer.getReadPointer (0), buffer.getReadPointer (0) + n, dry.begin());
+
+    const float th = juce::Decibels::decibelsToGain (thresholdParam->load());
+    const float og = juce::Decibels::decibelsToGain (outGainParam->load());
+
+    // hard clip
+    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    {
+        auto* data = buffer.getWritePointer (channel);
+        for (int i = 0; i < numSamples; ++i)
+            data[i] = juce::jlimit (-th, th, data[i]);
+    }
+
+    if (totalNumInputChannels > 0)
+    {
+        monitor.setThreshold (th);
+        monitor.push (dry.data(), buffer.getReadPointer (0), n);
+    }
+
+    //out gain
+    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    {
+        auto* data = buffer.getWritePointer (channel);
+        for (int i = 0; i < numSamples; i++)
+        {
+            data[i] *= (1 * og);
+        }
+    }
+
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
@@ -192,13 +231,20 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createLayou
 {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
 
-    layout.add (std::make_unique<juce::AudioParameterInt> (
+    layout.add (std::make_unique<juce::AudioParameterFloat> (
 
-        // я так понимаю это дичь пишут для всех каждый раз
-        juce::ParameterID { "volume", 1 }, // id, должен совпадать с VolumeKnob
-        "Volume", // имя в DAW
-        0, 127, // значения от и до
-        64)); // значение по умолчанию
+        // every time
+        juce::ParameterID { "threshold", 1 }, // id must match VolumeSlider, int must be unique
+        "Threshold", // name in DAW
+        -20.0f,
+        10.0f, // values from -20db to 10db
+        0.0f)); // default value
+
+    layout.add (std::make_unique<juce::AudioParameterFloat> (
+        juce::ParameterID { "outGain", 2 }, 
+        "Out gain in db",
+        0.0f, 20.0f,
+        0.0f)); // defaul value
 
     return layout;
 }
