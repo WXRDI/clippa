@@ -148,12 +148,15 @@ jobs:
           name: ${{ env.ARTIFACT_NAME }}.zip
           path: "${{ env.ARTIFACTS_PATH }}/${{ env.ARTIFACT_NAME }}.zip"
 
+      - name: Find artefacts
+        run: find . -name "*.component" -o -name "*.vst3"
+
       - name: Ad-hoc sign and Zip (macOS)
         if: ${{ runner.os == 'macOS' }}
         working-directory: ${{ env.ARTIFACTS_PATH }}
         run: |
-          codesign --force --deep -s - "${{ env.AU_PATH }}"
-          codesign --force --deep -s - "${{ env.VST3_PATH }}"
+          codesign --force --deep -s - "AU/${{ env.PRODUCT_NAME }}.component"
+          codesign --force --deep -s - "VST3/${{ env.PRODUCT_NAME }}.vst3"
           zip -r -y "${{ env.ARTIFACT_NAME }}.zip" AU VST3
 
       - name: Upload Zip (macOS)
