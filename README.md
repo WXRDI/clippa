@@ -4,11 +4,14 @@ Simple clipper VST made on JUCE.
 
 # Functionality
 
-* Threshold
+* Threshold:
+  
   Set a threshold with the bar on the left. Value range is from -20 to +10 db
-* Output gain
+* Output gain:
+  
   Outputs up to +20 db
-* Monitoring
+* Monitoring:
+  
   See your signal, cut parts and threshold lines
 
 **Version 1.0**
