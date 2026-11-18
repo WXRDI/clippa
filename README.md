@@ -1,5 +1,7 @@
 # Clippa
 
+![Clippa interface](./images/clippa.png)
+
 Simple clipper VST made on JUCE.
 
 # Functionality
@@ -14,9 +16,12 @@ Simple clipper VST made on JUCE.
   
   See your signal, cut parts and threshold lines
 
+---
 **Version 1.0**
 
 
+
+---
 This is a template repo!
 
 That means you can click "[Use this template](https://github.com/sudara/pamplejuce/generate)" here or at the top of the page to get your own copy (not fork) of the repo. Then you can make it private or keep it public, up to you.
